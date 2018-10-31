@@ -2,16 +2,15 @@
 import java.util.*;
 
 public class PirateChest{
-int pondDepth = 2;
-int pondVolume;
-int chestUnits;
-int chestVolume;
-int height =1;
-int solution;
+static int pondDepth = 2;
+static int pondVolume;
+static int chestUnits;
+static int chestVolume;
+static int height =1;
+static int solution;
 // const int MAX_CHEST_LENGTH = 
 
 public static void main(String[] args){
-
 System.out.println("Enter dimensions: ");
 Scanner input = new Scanner(System.in);
 System.out.println("Chest Length: ");
@@ -25,6 +24,7 @@ int pondWidth = input.nextInt();
 
 CalculateDimensions(chestLength, chestWidth, pondLength, pondWidth);
 System.out.println(FindLargestPossibleChest(chestLength, chestWidth, pondLength, pondWidth));
+input.close();
 }
 
 public static void CalculateDimensions(int cLength, int cWidth, int pLength, int pWidth){
@@ -39,7 +39,7 @@ public static int FindLargestPossibleChest(int chestLength, int chestWidth, int 
         return solution = 0;
     }
     else{
-        
+        return solution;
     }
 }
 }
