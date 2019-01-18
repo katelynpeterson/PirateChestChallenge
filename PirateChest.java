@@ -2,50 +2,74 @@
 import java.util.*;
 
 public class PirateChest{
-    static int pondVolume;
-    static int chestUnits;
-    static int chestVolume;
-    static int height =1;
-    static int solution;
-    static int chestLength;
-    static int chestWidth;
+    static int deepestSpot=0;
+    static int availablePondVolume=0;
+    static int sumObjectsVolumes=0;
+    static int chestVolume=0;
+    static int height=1;
+    static int solution = 0;
+    static int chestLength=0;
+    static int chestWidth=0;
+    static int pondLength =0;
+    static int pondWidth =0;
     static int [][] pondDimensions;
 
     public static void main(String[] args){
-        System.out.println("Enter dimensions: ");
+    	
         Scanner input = new Scanner(System.in);
-        System.out.println("Chest Length: ");
         int maxChestLength = input.nextInt();
-        System.out.println("Chest Width: ");
         int maxChestWidth = input.nextInt();
         chestLength = Math.max(maxChestLength, maxChestWidth);
         chestWidth = Math.min(maxChestLength, maxChestWidth);
-        System.out.println("Pond Length: ");
-        int pondLength = input.nextInt();
-        System.out.println("Pond Width: ");
-        int pondWidth = input.nextInt();
+        pondLength = input.nextInt();
+        pondWidth = input.nextInt();
         pondDimensions = new int[pondWidth][pondLength];
 
-        for(int i=0; i<chestWidth; i++)
-            for(j=0; j<chestLength; j++)
+        for(int i=0; i<pondWidth; i++) {
+            for(int j=0; j<pondLength; j++) {
                 pondDimensions[i][j]= input.nextInt();
+            }
+        }
 
-        CalculateDimensions(chestLength, chestWidth, pondLength, pondWidth);
-        System.out.println("The solution is: " + FindLargestPossibleChest(chestLength, chestWidth, pondLength, pondWidth));
+        System.out.println("The solution is: " + CalculateDimensions());
         input.close();
     }
 
-    public static void CalculateDimensions(int cLength, int cWidth, int pLength, int pWidth){
-        pondVolume = pLength * pWidth * pondDepth;
-        chestVolume = chestUnits = cLength * cWidth * height;
+    public static int CalculateDimensions(){
+        //find the deepest spot in the pond to calculate total pond volume
+    	int [] depth = new int[pondLength*pondWidth];
+        for(int i =0; i<pondWidth; i++) {
+            for(int j=0; j<pondLength; j++) {
+                depth[j]= pondDimensions[i][j];
+                deepestSpot = depth[j] > deepestSpot ? depth[j] : deepestSpot;
+            }
+        }
+
+        //find any objects in pond that take away volume
+        for(int k=0; k<depth.length;k++)
+        	sumObjectsVolumes += depth[k]<deepestSpot? depth[k]: 0;
+        
+        //subtract the volume taken by the objects in the pond from the total pond volume to get the available volume for the pirate chest to occupy
+        availablePondVolume = (pondLength * pondWidth * deepestSpot) - sumObjectsVolumes;
+
+        //initial chest volume
+        chestVolume = chestLength * chestWidth * height;
+        
+        return FindLargestPossibleChest(chestLength, chestWidth, height, pondLength, pondWidth, chestVolume, availablePondVolume);
     }
 
-    public static int FindLargestPossibleChest(int chestLength, int chestWidth, int pondLength, int pondWidth){
-        if(chestLength > pondWidth || chestWidth > pondWidth || chestVolume > pondVolume){
-            return solution = 0;
-        }
-        else{
-            return solution;
-        }
+    //Recursive solution
+    public static int FindLargestPossibleChest(int cLength, int cWidth, int cHeight, int pLength, int pWidth, int cVolume, int pVolume){
+    	//base case and compare values
+    	if(cVolume>pVolume)
+    		return solution;
+    	if(cLength>pLength || cWidth > pWidth)
+    		return solution;
+    	
+    	//increment values and try again
+    	height = cHeight++;
+    	availablePondVolume = pVolume + (cVolume/(pLength*pWidth));    	
+    	
+    	return solution = FindLargestPossibleChest(chestLength, chestWidth, height, pondLength, pondWidth, chestVolume, availablePondVolume);
     }
 }
